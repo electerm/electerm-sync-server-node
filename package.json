@@ -1,0 +1,42 @@
+{
+  "name": "electerm-sync-server-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "lint": "./node_modules/.bin/standard",
+    "fix": "./node_modules/.bin/standard --fix",
+    "test": "npm run lint && jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/electerm/electerm-sync-server-node.git"
+  },
+  "keywords": [
+    "electerm",
+    "sync",
+    "nodejs",
+    "express"
+  ],
+  "author": "ZHAO Xudong <zxdong@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/electerm/electerm-sync-server-node/issues"
+  },
+  "homepage": "https://github.com/electerm/electerm-sync-server-node#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "express-jwt": "^7.7.2"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1",
+    "jest": "^28.1.0",
+    "standard": "^16.0.0",
+    "supertest": "^6.2.3"
+  },
+  "standard": {
+    "ignore": [
+      "temp"
+    ]
+  }
+}
