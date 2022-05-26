@@ -6,7 +6,6 @@ function createApp (config) {
   const app = express()
   app.use(express.json()) // for parsing application/json
   app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-  console.log('process.env.JWT_SECRET', process.env.JWT_SECRET)
   const jwtAuth = jwt({
     secret: process.env.JWT_SECRET,
     algorithms: ['HS256']

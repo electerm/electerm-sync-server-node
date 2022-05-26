@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "./node_modules/.bin/standard",
     "fix": "./node_modules/.bin/standard --fix",
-    "test": "npm run lint && jest"
+    "test": "npm run lint && jest",
+    "start": "node src/server"
   },
   "repository": {
     "type": "git",
