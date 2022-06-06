@@ -7,8 +7,7 @@ const {
   JWT_SECRET,
   JWT_USERS
 } = process.env
-console.log(JWT_SECRET,
-  JWT_USERS)
+
 const token = jwt.sign(
   {
     id: JWT_USERS.split(',')[0]
