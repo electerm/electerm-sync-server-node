@@ -13,7 +13,6 @@ function createApp (config) {
   const userCheck = function (req, res, next) {
     const { id } = req.auth
     const all = process.env.JWT_USERS.split(',')
-    console.log('id', id, all)
     if (all.includes(id)) {
       next()
     } else {
