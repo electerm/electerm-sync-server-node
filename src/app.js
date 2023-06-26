@@ -26,8 +26,8 @@ function createApp (config) {
       next()
     }
   }
-  app.put('/sync', jwtAuth, errHandler, userCheck, config.write)
-  app.get('/sync', jwtAuth, errHandler, userCheck, config.read)
+  app.put('/api/sync', jwtAuth, errHandler, userCheck, config.write)
+  app.get('/api/sync', jwtAuth, errHandler, userCheck, config.read)
   app.get('/test', (req, res) => {
     res.send('ok')
   })

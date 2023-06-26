@@ -17,7 +17,7 @@ const token = jwt.sign(
 const args = [
   'Authorization', 'Bearer ' + token
 ]
-function req (method, path = '/sync') {
+function req (method, path = '/api/sync') {
   return request(app)[method](path)
     .set('Authorization', 'Bearer ' + token)
     .set('Accept', 'application/json')
