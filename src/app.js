@@ -27,6 +27,9 @@ function createApp (config) {
     }
   }
   app.put('/api/sync', jwtAuth, errHandler, userCheck, config.write)
+  app.post('/api/sync', jwtAuth, errHandler, userCheck, (req, res) => {
+    res.send('test ok')
+  })
   app.get('/api/sync', jwtAuth, errHandler, userCheck, config.read)
   app.get('/test', (req, res) => {
     res.send('ok')
