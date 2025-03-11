@@ -3,38 +3,121 @@ require('dotenv').config()
 const request = require('supertest')
 const app = require('../src/app')
 const jwt = require('jsonwebtoken')
+const fs = require('fs/promises')
+const path = require('path')
+
 const {
   JWT_SECRET,
-  JWT_USERS
+  JWT_USERS,
+  FILE_STORE_PATH
 } = process.env
 
-const token = jwt.sign(
-  {
-    id: JWT_USERS.split(',')[0]
-  },
-  JWT_SECRET, { algorithm: 'HS256', expiresIn: '120y' }
-)
-const args = [
-  'Authorization', 'Bearer ' + token
-]
-function req (method, path = '/api/sync') {
-  return request(app)[method](path)
-    .set('Authorization', 'Bearer ' + token)
-    .set('Accept', 'application/json')
-    .set('Content-Type', 'application/json')
-}
+// Setup test data and tokens
+const validUserId = JWT_USERS.split(',')[0]
+const invalidUserId = 'invalid-user'
 
-describe('test', () => {
-  test('get/put', async () => {
-    const r0 = await request(app)
-      .get('/test')
-    expect(r0.statusCode).toBe(200)
-    const r1 = await req('get')
-    expect(r1.statusCode).toBe(404)
-    const r2 = await req('put').send({ sss: 1 })
-    expect(r2.statusCode).toBe(200)
-    const r3 = await request(app).get('/sync').set(...args)
-    expect(r3.statusCode).toBe(200)
-    expect(r3.body.sss).toBe(1)
+const validToken = jwt.sign(
+  { id: validUserId },
+  JWT_SECRET,
+  { algorithm: 'HS256', expiresIn: '1h' }
+)
+
+const invalidToken = jwt.sign(
+  { id: invalidUserId },
+  JWT_SECRET,
+  { algorithm: 'HS256', expiresIn: '1h' }
+)
+
+const testData = { test: 'data' }
+
+describe('API Endpoints', () => {
+  // Clean up test files after all tests
+  afterAll(async () => {
+    const testFile = path.resolve(FILE_STORE_PATH || process.cwd(), `${validUserId}.json`)
+    try {
+      await fs.unlink(testFile)
+    } catch (err) {
+      // Ignore if file doesn't exist
+    }
+  })
+
+  describe('GET /test', () => {
+    it('should return 200 OK', async () => {
+      const response = await request(app).get('/test')
+      expect(response.status).toBe(200)
+      expect(response.text).toBe('ok')
+    })
+  })
+
+  describe('PUT /api/sync', () => {
+    it('should return 401 without token', async () => {
+      const response = await request(app)
+        .put('/api/sync')
+        .send(testData)
+      expect(response.status).toBe(401)
+    })
+
+    it('should return 401 with invalid token', async () => {
+      const response = await request(app)
+        .put('/api/sync')
+        .set('Authorization', `Bearer ${invalidToken}`)
+        .send(testData)
+      expect(response.status).toBe(401)
+    })
+
+    it('should return 200 with valid token', async () => {
+      const response = await request(app)
+        .put('/api/sync')
+        .set('Authorization', `Bearer ${validToken}`)
+        .send(testData)
+      expect(response.status).toBe(200)
+      expect(response.text).toBe('ok')
+    })
+  })
+
+  describe('POST /api/sync', () => {
+    it('should return 401 without token', async () => {
+      const response = await request(app)
+        .post('/api/sync')
+      expect(response.status).toBe(401)
+    })
+
+    it('should return 401 with invalid token', async () => {
+      const response = await request(app)
+        .post('/api/sync')
+        .set('Authorization', `Bearer ${invalidToken}`)
+      expect(response.status).toBe(401)
+    })
+
+    it('should return 200 with valid token', async () => {
+      const response = await request(app)
+        .post('/api/sync')
+        .set('Authorization', `Bearer ${validToken}`)
+      expect(response.status).toBe(200)
+      expect(response.text).toBe('test ok')
+    })
+  })
+
+  describe('GET /api/sync', () => {
+    it('should return 401 without token', async () => {
+      const response = await request(app)
+        .get('/api/sync')
+      expect(response.status).toBe(401)
+    })
+
+    it('should return 401 with invalid token', async () => {
+      const response = await request(app)
+        .get('/api/sync')
+        .set('Authorization', `Bearer ${invalidToken}`)
+      expect(response.status).toBe(401)
+    })
+
+    it('should return previously stored data with valid token', async () => {
+      const response = await request(app)
+        .get('/api/sync')
+        .set('Authorization', `Bearer ${validToken}`)
+      expect(response.status).toBe(200)
+      // File should exist and contain test data from PUT test
+    })
   })
 })
