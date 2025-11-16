@@ -18,7 +18,7 @@
 
 ### 前置条件
 
-- Node.js 16+（推荐使用 [nvm](https://github.com/nvm-sh/nvm)）
+- Node.js 20+（推荐使用 [nvm](https://github.com/nvm-sh/nvm)）
 - npm
 
 ### 安装

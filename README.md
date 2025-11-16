@@ -18,7 +18,7 @@ A simple and solid Electerm data sync server using SQLite database.
 
 ### Prerequisites
 
-- Node.js 16+ (recommend using [nvm](https://github.com/nvm-sh/nvm))
+- Node.js 20+ (recommend using [nvm](https://github.com/nvm-sh/nvm))
 - npm
 
 ### Installation
